@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=deepscan
+      - DB_PASSWORD=deepscan
+      - DB_NAME=deepscan_db
+    restart: unless-stopped
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: deepscan
+      POSTGRES_PASSWORD: deepscan
+      POSTGRES_DB: deepscan_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
