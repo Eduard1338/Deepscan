@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<robot name="deepscan_boat">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <mesh filename="model://boat_mesh/meshes/boat_hull.obj" scale="2.3 2.3 2.3"/>
+      </geometry>
+      <origin xyz="0 0 0.4" rpy="1.570796 0 1.570796"/>   <!-- поворот вокруг X на 90° -->
+      <material name="boat_color">
+        <color rgba="0.2 0.4 0.8 1.0"/>
+      </material>
+    </visual>
+      <collision>
+      <geometry>
+        <box size="3.9 2.56 2.04"/>
+      </geometry>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="100"/>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+      <inertia ixx="10" ixy="0" ixz="0" iyy="10" iyz="0" izz="10"/>
+    </inertial>
+  </link>
+  <!-- Далее сонарное звено и плагины – оставь без изменений -->
+  <!-- Плагин GPS (идеальные глобальные координаты) -->
+  <!-- Плавучесть (только для водного мира) -->
+  <!-- Плагин движения пока отключён -->
+  
+  <gazebo>
+    <plugin name="planar_move_plugin" filename="libgazebo_ros_planar_move.so">
+      <ros>
+        <namespace>/deepscan_boat</namespace>
+        <remapping>cmd_vel:=/deepscan_boat/cmd_vel</remapping>
+      </ros>
+    </plugin>
+  </gazebo>
+  
+  <!-- Сонар (опущен на 1.2 м вниз, направлен строго вниз) -->
+  <link name="sonar_link"/>
+  <joint name="sonar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="sonar_link"/>
+    <origin xyz="0 0 -1.2" rpy="0 1.570796 0"/>
+  </joint>
+
+  <gazebo reference="sonar_link">
+    <sensor name="sonar_sensor" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>200</samples>
+            <min_angle>-1.094</min_angle>
+            <max_angle>1.094</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>25.0</max>
+        </range>
+      </ray>
+      <plugin name="sonar_plugin" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <namespace>/sonar</namespace>
+          <remapping>~/out:=points</remapping>
+        </ros>
+        <output_type>sensor_msgs/PointCloud2</output_type>
+      </plugin>
+    </sensor>
+  </gazebo>
+    <!-- Камера -->
+  <link name="camera_link"/>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <!-- Нос катера: X вперёд, Y=0, Z чуть выше корпуса -->
+    <origin xyz="1.5 0 0.8" rpy="0 0.2 0"/>
+  </joint>
+
+  <gazebo reference="camera_link">
+    <sensor name="camera_sensor" type="camera">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>10.0</update_rate>
+      <camera>
+        <horizontal_fov>1.0472</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>100</far>
+        </clip>
+      </camera>
+      <plugin name="camera_plugin" filename="libgazebo_ros_camera.so">
+        <ros>
+          <namespace>/camera</namespace>
+          <remapping>image_raw:=image_raw</remapping>
+        </ros>
+        <camera_name>front_cam</camera_name>
+        <frame_name>camera_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+</robot>

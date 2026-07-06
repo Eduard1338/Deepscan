@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="underwater_scene">
+    <static>true</static>
+    <link name="scene_link">
+      <collision name="scene_collision">
+        <geometry>
+          <mesh>
+            <uri>model://underwater_scene/meshes/full_scene.obj</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="scene_visual">
+        <geometry>
+          <mesh>
+            <uri>model://underwater_scene/meshes/full_scene.obj</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

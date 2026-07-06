@@ -1,0 +1,34 @@
+# Blender 5.1.1 MTL File: 'seaDNO.blend'
+# www.blender.org
+
+newmtl Material_#38
+Ns 20.000006
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+
+newmtl items_7_baked
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl tv_retro
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd /home/eduard/Downloads/3D_MODELS/F:/All_Ian_Directories/Projects/Sketchfab/store_items/tv_retro/textures/tv1_UVMap_color_x2048.jpg
+map_Ns /home/eduard/Downloads/3D_MODELS/F:/All_Ian_Directories/Projects/Sketchfab/store_items/tv_retro/textures/tv1_UVMap_rough_x2048.jpg
+map_refl /home/eduard/Downloads/3D_MODELS/F:/All_Ian_Directories/Projects/Sketchfab/store_items/tv_retro/textures/tv1_UVMap_metalness_x2048.jpg
+map_Bump -bm 1.000000 /home/eduard/Downloads/3D_MODELS/F:/All_Ian_Directories/Projects/Sketchfab/store_items/tv_retro/textures/tv1_UVMap_nmap_x2048.jpg
