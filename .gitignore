@@ -3,10 +3,10 @@ __pycache__/
 *.pyc
 *.pyo
 
-# ROS2 build artefacts
-deepscan_ws/build/
-deepscan_ws/install/
-deepscan_ws/log/
+# ROS2
+build/
+install/
+log/
 
 # IDE
 .vscode/
@@ -16,15 +16,19 @@ deepscan_ws/log/
 .DS_Store
 Thumbs.db
 
-# Docker
-*.log
-
 # Данные (слишком большие)
 deepscan_sonar_data/
 *.xyz
 *.pcd
-*.png
-*.glb
 
-# Личные настройки
-.bashrc
+# Модели (большие файлы)
+*.obj
+*.dae
+*.glb
+*.fbx
+
+# Volumes Docker
+postgres_data/
+
+# Логи
+*.log

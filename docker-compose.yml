@@ -1,27 +1,96 @@
-version: '3.8'
-
 services:
-  web:
-    build: .
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
+
+  # ===== 1. СИМУЛЯЦИЯ =====
+  gazebo:
+    build: ./gazebo
+    container_name: deepscan-gazebo
+    network_mode: host
     environment:
-      - DB_HOST=db
-      - DB_USER=deepscan
-      - DB_PASSWORD=deepscan
-      - DB_NAME=deepscan_db
+      - ROS_DOMAIN_ID=42
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - XDG_RUNTIME_DIR=/tmp/runtime-root
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/root/.Xauthority:rw
+      - ${HOME}/.gazebo/models:/root/.gazebo/models:ro
+    stdin_open: true
+    tty: true
     restart: unless-stopped
 
+  # ===== 2. СБОР ДАННЫХ =====
+  collector:
+    build: ./collector
+    container_name: deepscan-collector
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=42
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - DATA_DIR=/root/deepscan_sonar_data
+    volumes:
+      - ${HOME}/deepscan_sonar_data:/root/deepscan_sonar_data
+    depends_on:
+      - gazebo
+    restart: unless-stopped
+
+  # ===== 3. ОБРАБОТКА (запускается вручную) =====
+  processor:
+    build: ./processor
+    container_name: deepscan-processor
+    network_mode: host
+    environment:
+      - DATA_DIR=/root/deepscan_sonar_data
+    volumes:
+      - ${HOME}/deepscan_sonar_data:/root/deepscan_sonar_data
+    depends_on:
+      - db
+    # без restart — запускается по требованию
+
+  # ===== 4. АВТОПИЛОТ =====
+  mission:
+    build: ./mission
+    container_name: deepscan-mission
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=42
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - DATA_DIR=/root/deepscan_sonar_data
+    volumes:
+      - ${HOME}/deepscan_sonar_data:/root/deepscan_sonar_data
+    depends_on:
+      - gazebo
+      - db
+    restart: unless-stopped
+
+  # ===== 5. ВЕБ-ИНТЕРФЕЙС =====
+  backend:
+    build: ./backend
+    container_name: deepscan-backend
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=42
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - DATA_DIR=/root/deepscan_sonar_data
+    volumes:
+      - ${HOME}/deepscan_sonar_data:/root/deepscan_sonar_data
+    depends_on:
+      - db
+      - gazebo
+    restart: unless-stopped
+
+  # ===== 6. БАЗА ДАННЫХ =====
   db:
     image: postgres:14
+    container_name: deepscan-db
+    network_mode: host
     environment:
       POSTGRES_USER: deepscan
       POSTGRES_PASSWORD: deepscan
       POSTGRES_DB: deepscan_db
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
 
 volumes:
