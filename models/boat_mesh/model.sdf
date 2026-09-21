@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="boat_mesh">
+    <static>true</static>
+    <link name="link">
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://boat_mesh/meshes/boat_hull.obj</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

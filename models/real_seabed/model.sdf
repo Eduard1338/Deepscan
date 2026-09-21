@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="real_seabed">
+    <static>true</static>
+    <link name="seabed_link">
+      <pose>0 0 -10 0 0 0</pose>
+      <collision name="seabed_collision">
+        <geometry>
+          <mesh>
+            <uri>model://real_seabed/meshes/real_seabed.obj</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="seabed_visual">
+        <geometry>
+          <mesh>
+            <uri>model://real_seabed/meshes/real_seabed.obj</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.3 0.2 0.1 1</ambient>
+          <diffuse>0.4 0.3 0.2 1</diffuse>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
